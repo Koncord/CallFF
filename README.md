@@ -1,7 +1,7 @@
-#CallFF library
+# CallFF library
 CallFF library allows to making foreign functions calls.
 
-##Supported Architectures & OSes
+## Supported Architectures & OSes
 | Architecture | OS      | Status      |
 |--------------|---------|-------------|
 | ARM64        | Linux   | ToDo        |
