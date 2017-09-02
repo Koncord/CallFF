@@ -10,10 +10,10 @@ namespace utils
         uint64_t ad = __builtin_bswap64(val);
 #endif
 
-        for (int i = 0; i < 8; i++)
-            code[codeOffset + 7 - i] = (unsigned char) (ad >> (i * 8));
+        for (int i = 0; i < sizeof(uint64_t); i++)
+            code[codeOffset + sizeof(uint64_t) -1 - i] = (unsigned char) (ad >> (i * 8));
 
-        codeOffset += 8;
+        codeOffset += sizeof(uint64_t);
     }
 
 
@@ -25,9 +25,9 @@ namespace utils
         uint32_t ad = __builtin_bswap32(val);
 #endif
 
-        for (int i = 0; i < 4; i++)
-            code[codeOffset + 3 - i] = (unsigned char) (ad >> (i * 8));
+        for (int i = 0; i < sizeof(uint32_t); i++)
+            code[codeOffset + sizeof(uint32_t) - 1 - i] = (unsigned char) (ad >> (i * 8));
 
-        codeOffset += 4;
+        codeOffset += sizeof(uint32_t);
     }
 }

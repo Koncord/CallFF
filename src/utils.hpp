@@ -8,7 +8,7 @@
 
 namespace utils
 {
-    inline size_t braceToString(std::initializer_list<unsigned char> c, unsigned char* str) noexcept
+    inline size_t braceToCString(const std::initializer_list<unsigned char> &c, unsigned char *str) noexcept
     {
         std::copy(c.begin(), c.end(), str);
         return c.size();

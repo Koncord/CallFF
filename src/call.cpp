@@ -36,7 +36,7 @@ uintptr_t Call(Func &fCpp, CallArgs &data) noexcept
     void *buf = CreateExecutePage(bytesUsed, 0);
     memcpy (buf, &code[0], bytesUsed);
 
-    Func f = reinterpret_cast<Func>(buf);
+    auto f = reinterpret_cast<Func>(buf);
     uintptr_t ret = f();
 
     DeleteExecutePage(buf, bytesUsed);

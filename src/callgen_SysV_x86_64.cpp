@@ -15,15 +15,14 @@ size_t GenerateCode(Func &fCpp, CallArgs &data, unsigned char *code) noexcept
     unsigned char stack;
     auto movToStack = [&codeOffset, &code, &stack](uint64_t value)
     { // faster than regular pushq
-        codeOffset += utils::braceToString({REX_W, OP_MOV_TO_REG(RAX)}, &code[codeOffset]);
+        codeOffset += utils::braceToCString({REX_W, OP_MOV_TO_REG(RAX)}, &code[codeOffset]);
         utils::Value64ToString(value, code, codeOffset);
         stack -= 8;
-        codeOffset += utils::braceToString(MOV_TO_STACK(RAX, stack), &code[codeOffset]);
-
+        codeOffset += utils::braceToCString(MOV_TO_STACK(RAX, stack), &code[codeOffset]);
     };
 
     code[codeOffset++] = OP_PUSH_REG(RBP);
-    codeOffset += utils::braceToString(MOV_RSP_RBP, &code[codeOffset]);
+    codeOffset += utils::braceToCString(MOV_RSP_RBP, &code[codeOffset]);
 
     int stackSize = 0;
     int floatValues = 0;
@@ -50,7 +49,7 @@ size_t GenerateCode(Func &fCpp, CallArgs &data, unsigned char *code) noexcept
             stack -= 8;
             stackSize += 1;
         }
-        codeOffset += utils::braceToString(SUB_IMM8_REG((unsigned char) (stackSize * align), RSP), &code[codeOffset]);
+        codeOffset += utils::braceToCString(SUB_IMM8_REG((unsigned char) (stackSize * align), RSP), &code[codeOffset]);
 
         for (size_t i = data.size() - 1; i >= 6; --i)
         {
@@ -69,22 +68,22 @@ size_t GenerateCode(Func &fCpp, CallArgs &data, unsigned char *code) noexcept
             {
                 case 0:
                     // copy data from stack to RDI register
-                    codeOffset += utils::braceToString({REX_W, OP_MOV_TO_REG(RDI)}, &code[codeOffset]);
+                    codeOffset += utils::braceToCString({REX_W, OP_MOV_TO_REG(RDI)}, &code[codeOffset]);
                     break;
                 case 1:
-                    codeOffset += utils::braceToString({REX_W, OP_MOV_TO_REG(RSI)}, &code[codeOffset]);
+                    codeOffset += utils::braceToCString({REX_W, OP_MOV_TO_REG(RSI)}, &code[codeOffset]);
                     break;
                 case 2:
-                    codeOffset += utils::braceToString({REX_W, OP_MOV_TO_REG(RDX)}, &code[codeOffset]);
+                    codeOffset += utils::braceToCString({REX_W, OP_MOV_TO_REG(RDX)}, &code[codeOffset]);
                     break;
                 case 3:
-                    codeOffset += utils::braceToString({REX_W, OP_MOV_TO_REG(RCX)}, &code[codeOffset]);
+                    codeOffset += utils::braceToCString({REX_W, OP_MOV_TO_REG(RCX)}, &code[codeOffset]);
                     break;
                 case 4:
-                    codeOffset += utils::braceToString({REX_WB, OP_MOV_TO_REG(R8)}, &code[codeOffset]);
+                    codeOffset += utils::braceToCString({REX_WB, OP_MOV_TO_REG(R8)}, &code[codeOffset]);
                     break;
                 case 5:
-                    codeOffset += utils::braceToString({REX_WB, OP_MOV_TO_REG(R9)}, &code[codeOffset]);
+                    codeOffset += utils::braceToCString({REX_WB, OP_MOV_TO_REG(R9)}, &code[codeOffset]);
                     break;
                 default:
                     break;
@@ -94,22 +93,22 @@ size_t GenerateCode(Func &fCpp, CallArgs &data, unsigned char *code) noexcept
         }
         else if (v.first == 'f' && argfn < 16) // regular float arguments to XMM0-XMM15
         {
-            codeOffset += utils::braceToString({REX_W, OP_MOV_TO_REG(RAX)}, &code[codeOffset]);
+            codeOffset += utils::braceToCString({REX_W, OP_MOV_TO_REG(RAX)}, &code[codeOffset]);
             utils::Value64ToString(v.second, code, codeOffset);
-            codeOffset += utils::braceToString(MOVQ_MMX(argfn, RAX), &code[codeOffset]); // argfn is XMM0-XMM15
+            codeOffset += utils::braceToCString(MOVQ_MMX(argfn, RAX), &code[codeOffset]); // argfn is XMM0-XMM15
             argfn++;
         }
     }
 
     //movabs fCpp, %r10
-    codeOffset += utils::braceToString({REX_WB, OP_MOV_TO_REG(R10)}, &code[codeOffset]);
+    codeOffset += utils::braceToCString({REX_WB, OP_MOV_TO_REG(R10)}, &code[codeOffset]);
     utils::Value64ToString((uintptr_t) fCpp, code, codeOffset);
     // call *%r10
     code[codeOffset++] = REX_B;
-    codeOffset += utils::braceToString(CALL_REG(R10), &code[codeOffset]);
+    codeOffset += utils::braceToCString(CALL_REG(R10), &code[codeOffset]);
 
     if (stackSize > 0) // deallocate stack
-        codeOffset += utils::braceToString(ADD_IMM8_REG((unsigned char) (stackSize * align), RSP), &code[codeOffset]);
+        codeOffset += utils::braceToCString(ADD_IMM8_REG((unsigned char) (stackSize * align), RSP), &code[codeOffset]);
 
     code[codeOffset++] = OP_LEAVE; // pop rbp; mov rbp, rsp
     code[codeOffset++] = OP_RETQ;
