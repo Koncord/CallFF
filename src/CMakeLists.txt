@@ -8,6 +8,6 @@ endif()
 
 add_library(callff ${SOURCE_FILES})
 
-if(${CMAKE_CXX_COMPILER_ID} EQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} EQUAL "Clang")
-    target_compile_definitions(callff "-pedantic -D__STRICT_ANSI__ -fpic")
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+    target_compile_options(callff PRIVATE -pedantic -fpic)
 endif()
