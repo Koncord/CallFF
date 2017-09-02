@@ -14,43 +14,61 @@ public:
     typedef Type::const_iterator CIterator;
 
     inline void push_integer(uint64_t val) noexcept {
-        args.push_back(std::make_pair('i', val));
+        if(sizeof(uintptr_t) < sizeof(uint64_t)) // if uint64_t is 8 and uintptr_t is 4
+        {
+            args.emplace_back('i', *reinterpret_cast<uintptr_t*>(&val));
+            args.emplace_back('i', *reinterpret_cast<uintptr_t*>((uintptr_t) &val + 4));
+        }
+        else
+            args.emplace_back('i', val);
     }
     inline void push_integer(int64_t val) noexcept {
-        args.push_back(std::make_pair('i', static_cast<uintptr_t>(val)));
+        if(sizeof(uintptr_t) < sizeof(int64_t)) // if int64_t is 8 and uintptr_t is 4
+        {
+            args.emplace_back('i', *reinterpret_cast<uintptr_t*>(&val));
+            args.emplace_back('i', *reinterpret_cast<uintptr_t*>((uintptr_t) &val + 4));
+        }
+        else
+            args.emplace_back('i', static_cast<uintptr_t>(val));
     }
     inline void push_integer(uint64_t *val) noexcept {
-        args.push_back(std::make_pair('i', reinterpret_cast<uintptr_t>(val)));
+        args.emplace_back('i', reinterpret_cast<uintptr_t>(val));
     }
     inline void push_integer(int64_t *val) noexcept {
-        args.push_back(std::make_pair('i', reinterpret_cast<uintptr_t>(val)));
+        args.emplace_back('i', reinterpret_cast<uintptr_t>(val));
     }
 
     inline void push_integer(uint32_t val) noexcept {
-        args.push_back(std::make_pair('i', static_cast<uintptr_t>(val)));
+        args.emplace_back('i', static_cast<uintptr_t>(val));
     }
     inline void push_integer(int32_t val) noexcept {
-        args.push_back(std::make_pair('i', static_cast<uintptr_t>(val)));
+        args.emplace_back('i', static_cast<uintptr_t>(val));
     }
     inline void push_integer(uint32_t *val) noexcept {
-        args.push_back(std::make_pair('i', reinterpret_cast<uintptr_t>(val)));
+        args.emplace_back('i', reinterpret_cast<uintptr_t>(val));
     }
     inline void push_integer(int32_t *val) noexcept {
-        args.push_back(std::make_pair('i', reinterpret_cast<uintptr_t>(val)));
+        args.emplace_back('i', reinterpret_cast<uintptr_t>(val));
     }
 
     inline void push_stringPtr(char *ptr) noexcept {
-        args.push_back(std::make_pair('s', reinterpret_cast<uintptr_t>(ptr)));
+        args.emplace_back('s', reinterpret_cast<uintptr_t>(ptr));
     }
     inline void push_stringPtr(const char *ptr) noexcept {
-        args.push_back(std::make_pair('s', reinterpret_cast<uintptr_t>(ptr)));
+        args.emplace_back('s', reinterpret_cast<uintptr_t>(ptr));
     }
 
     inline void push_double(double val) noexcept {
-        args.push_back(std::make_pair('f', *reinterpret_cast<uintptr_t*>(&val)));
+        if(sizeof(uintptr_t) < sizeof(double)) // if double is 8 and uintptr_t is 4
+        {
+            args.emplace_back('f', *reinterpret_cast<uintptr_t*>(&val));
+            args.emplace_back('f', *reinterpret_cast<uintptr_t*>((uintptr_t) &val + 4));
+        }
+        else
+            args.emplace_back('f', *reinterpret_cast<uintptr_t*>(&val));
     }
     inline void push_double(double *ptr) noexcept {
-        args.push_back(std::make_pair('d', reinterpret_cast<uintptr_t>(ptr)));
+        args.emplace_back('d', reinterpret_cast<uintptr_t>(ptr));
     }
 
     inline CIterator begin() noexcept {
