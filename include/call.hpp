@@ -2,6 +2,7 @@
 #define CALLFF_CALL_HPP
 
 #include <cstdint>
+#include <sys/types.h>
 #include "callarg.hpp"
 
 #define CALLFF_VERSION_MAJOR 0
